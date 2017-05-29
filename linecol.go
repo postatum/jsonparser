@@ -73,19 +73,19 @@ func (li *LineIndex) OffsetToLineCol(offset int) (line int, bytecol int, runecol
 		return incr(0, offset, li.bytePosToRunePos(0, offset))
 	}
 	// On the last line
-	if offset >= li.NewlinePos[numLines-1] {
+	if offset > li.NewlinePos[numLines-1] {
 		// fmt.Printf("\n  on last line of li.JsonBlob, n=%v, li.NewlinePos[n-1==%v]==%v\n",
 		// 	n, n-1, li.NewlinePos[n-1])
 		return incr(numLines, offset - (li.NewlinePos[numLines-1] + 1), li.bytePosToRunePos(numLines, offset))
 	}
 
-	// binary search to locate the line using the li.NewlinePos index:
+	// Binary search to locate the line using the li.NewlinePos index:
 	//
 	// sort.Search returns the smallest index i in [0, n) at which f(i) is true,
 	// assuming that on the range [0, n), f(i) == true implies f(i+1) == true.
 	//
 	srch := sort.Search(numLines, func(i int) bool {
-		r := (offset < li.NewlinePos[i])
+		r := (offset <= li.NewlinePos[i])
 		// fmt.Printf("\n sort.Search on i = %v, with offset=%v, li.NewlinePos[i=%v] = %v, returning r=%v\n",
 		// 	i, offset, i, li.NewlinePos[i], r)
 		return r
