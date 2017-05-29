@@ -56,7 +56,8 @@ func (li *LineIndex) FindNewlines() {
 func (li *LineIndex) OffsetToLineCol(offset int) (line int, bytecol int, runecol int) {
 	// li.DebugDump()
 
-	if offset >= len(li.JsonBlob) || offset < 0 {
+	// Should this check be ">="? Is there a column after offset of full string length?
+	if offset > len(li.JsonBlob) || offset < 0 {
 		return -1, -1, -1
 	}
 	if offset == 0 {
@@ -70,6 +71,10 @@ func (li *LineIndex) OffsetToLineCol(offset int) (line int, bytecol int, runecol
 	}
 	// On the last line
 	if offset > li.NewlinePos[numNewLines-1] {
+		return incr(numNewLines, offset - (li.NewlinePos[numNewLines-1] + 1), li.bytePosToRunePos(numNewLines, offset))
+	}
+	// Offset of whole string length = last column
+	if offset == len(li.JsonBlob) {
 		return incr(numNewLines, offset - (li.NewlinePos[numNewLines-1] + 1), li.bytePosToRunePos(numNewLines, offset))
 	}
 
