@@ -34,7 +34,6 @@ func (li *LineIndex) FindNewlines() {
 	// c.f. https://blog.golang.org/strings
 	sj := string(li.JsonBlob)
 	for index, rn := range sj {
-		// fmt.Printf("at index '%v', rune is '%v', aka '%#v'\n", index, rune, string(rune))
 		if rn == '\n' {
 			li.NewlinePos = append(li.NewlinePos, index)
 		}
@@ -55,8 +54,6 @@ func (li *LineIndex) FindNewlines() {
 // Lines are numbered from 1, so offset 0 is at line 1, col 1.
 //
 func (li *LineIndex) OffsetToLineCol(offset int) (line int, bytecol int, runecol int) {
-	// fmt.Printf("\n top of OffsetToLineCol, offset=%v\n", offset)
-
 	// li.DebugDump()
 
 	if offset >= len(li.JsonBlob) || offset < 0 {
@@ -69,13 +66,10 @@ func (li *LineIndex) OffsetToLineCol(offset int) (line int, bytecol int, runecol
 
 	// No newlines in the indexed li.JsonBlob
 	if numNewLines == 0 {
-		// fmt.Printf("\n  no newlines in li.JsonBlob \n")
 		return incr(0, offset, li.bytePosToRunePos(0, offset))
 	}
 	// On the last line
 	if offset > li.NewlinePos[numNewLines-1] {
-		// fmt.Printf("\n  on last line of li.JsonBlob, n=%v, li.NewlinePos[n-1==%v]==%v\n",
-		// 	n, n-1, li.NewlinePos[n-1])
 		return incr(numNewLines, offset - (li.NewlinePos[numNewLines-1] + 1), li.bytePosToRunePos(numNewLines, offset))
 	}
 
@@ -86,13 +80,9 @@ func (li *LineIndex) OffsetToLineCol(offset int) (line int, bytecol int, runecol
 	//
 	srch := sort.Search(numNewLines, func(i int) bool {
 		r := (offset <= li.NewlinePos[i])
-		// fmt.Printf("\n sort.Search on i = %v, with offset=%v, li.NewlinePos[i=%v] = %v, returning r=%v\n",
-		// 	i, offset, i, li.NewlinePos[i], r)
 		return r
 	})
-	// fmt.Printf("\n   srch=%v, n=%v, offset=%v\n", srch, n, offset)
 	linestart := li.NewlinePos[srch-1] + 1
-	// fmt.Printf("\n linestart = %v, offset=%v\n", linestart, offset)
 	return incr(srch, offset - linestart, li.bytePosToRunePos(srch, offset))
 }
 
@@ -111,14 +101,11 @@ func incr(x, y, z int) (int, int, int) {
 // bytePosToRunePos is O(length of the line).
 //
 func (li *LineIndex) bytePosToRunePos(linenoz int, offset int) int {
-	// fmt.Printf("\n debug top of bytePosToRunePos, linenoz=%v, offset=%v\n", linenoz, offset)
 	var beg int
 	if linenoz > 0 {
 		beg = li.NewlinePos[linenoz-1] + 1
 	}
-	// fmt.Printf("\n debug bytePosToRunePos, linenoz=%v, offset=%v, beg=%v\n", linenoz, offset, beg)
 	s := string(li.JsonBlob[beg : offset+1])
-	// fmt.Printf("\n debug bytePosToRunePos, s = '%s'\n", s)
 	return utf8.RuneCountInString(s) - 1
 }
 
