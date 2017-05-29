@@ -33,22 +33,22 @@ func runLineColTest(t *testing.T, input []byte, expected []int) {
 // TestOffsetToLineCol turns an offset into a line/column position.
 func TestOffsetToLineCol(t *testing.T) {
 
-	runOffsetToLineColTest(t, []byte(`{"a":"b"}`), []string{`a`}, []byte(`b`), 0, 5, 5, String)
-	runOffsetToLineColTest(t, []byte("\n"+`{"a":"b"}`), []string{`a`}, []byte(`b`), 1, 5, 5, String)
-	runOffsetToLineColTest(t, []byte("\n"+`{"a":"b"}`+"\n"), []string{`a`}, []byte(`b`), 1, 5, 5, String)
-	runOffsetToLineColTest(t, []byte("\n\n"+`{"a":"b"}`+"\n"), []string{`a`}, []byte(`b`), 2, 5, 5, String)
-	runOffsetToLineColTest(t, []byte("\n\n"+`{"a":"b"}`+"\n\n"), []string{`a`}, []byte(`b`), 2, 5, 5, String)
-	runOffsetToLineColTest(t, []byte("\n\n"+`{"a":`+"\n"+`"b"}`+"\n\n"), []string{`a`}, []byte(`b`), 3, 0, 0, String)
-	runOffsetToLineColTest(t, []byte("\n\n"+`{`+"\n"+`"a":`+"\n"+`"b"}`+"\n\n"), []string{`a`}, []byte(`b`), 4, 0, 0, String)
-	runOffsetToLineColTest(t, []byte(`{`+"\n"+`"a":`+"\n"+`"b"}`), []string{`a`}, []byte(`b`), 2, 0, 0, String)
-	runOffsetToLineColTest(t, []byte(`{`+"\n"+`"a":`+`"b"}`), []string{`a`}, []byte(`b`), 1, 4, 4, String)
+	runOffsetToLineColTest(t, []byte(`{"a":"b"}`), []string{`a`}, []byte(`b`), 1, 6, 6, String)
+	runOffsetToLineColTest(t, []byte("\n"+`{"a":"b"}`), []string{`a`}, []byte(`b`), 2, 6, 6, String)
+	runOffsetToLineColTest(t, []byte("\n"+`{"a":"b"}`+"\n"), []string{`a`}, []byte(`b`), 2, 6, 6, String)
+	runOffsetToLineColTest(t, []byte("\n\n"+`{"a":"b"}`+"\n"), []string{`a`}, []byte(`b`), 3, 6, 6, String)
+	runOffsetToLineColTest(t, []byte("\n\n"+`{"a":"b"}`+"\n\n"), []string{`a`}, []byte(`b`), 3, 6, 6, String)
+	runOffsetToLineColTest(t, []byte("\n\n"+`{"a":`+"\n"+`"b"}`+"\n\n"), []string{`a`}, []byte(`b`), 4, 1, 1, String)
+	runOffsetToLineColTest(t, []byte("\n\n"+`{`+"\n"+`"a":`+"\n"+`"b"}`+"\n\n"), []string{`a`}, []byte(`b`), 5, 1, 1, String)
+	runOffsetToLineColTest(t, []byte(`{`+"\n"+`"a":`+"\n"+`"b"}`), []string{`a`}, []byte(`b`), 3, 1, 1, String)
+	runOffsetToLineColTest(t, []byte(`{`+"\n"+`"a":`+`"b"}`), []string{`a`}, []byte(`b`), 2, 5, 5, String)
 
 	// multiline value
-	runOffsetToLineColTest(t, []byte(`{`+"\n"+`"a":"b`+"\n"+`ye"}`), []string{`a`}, []byte(`b`+"\n"+`ye`), 1, 4, 4, String)
+	runOffsetToLineColTest(t, []byte(`{`+"\n"+`"a":"b`+"\n"+`ye"}`), []string{`a`}, []byte(`b`+"\n"+`ye`), 2, 5, 5, String)
 
 	// multi-byte characters
-	runOffsetToLineColTest(t, []byte(`{"世界":"世界"}`), []string{`世界`}, []byte(`世界`), 0, 10, 6, String)
-	runOffsetToLineColTest(t, []byte(`{"世界":`+"\n"+`"世界"}`), []string{`世界`}, []byte(`世界`), 1, 0, 0, String)
+	runOffsetToLineColTest(t, []byte(`{"世界":"世界"}`), []string{`世界`}, []byte(`世界`), 1, 11, 7, String)
+	runOffsetToLineColTest(t, []byte(`{"世界":`+"\n"+`"世界"}`), []string{`世界`}, []byte(`世界`), 2, 1, 1, String)
 
 }
 
